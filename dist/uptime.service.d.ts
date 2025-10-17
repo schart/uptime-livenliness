@@ -1,5 +1,8 @@
-export declare class AppService {
+import { UptimeGateway } from './uptime.gateway';
+export declare class UptimeService {
+    private readonly gateway;
     private readonly logger;
+    constructor(gateway: UptimeGateway);
     getSites(): {
         status: number;
         content: {

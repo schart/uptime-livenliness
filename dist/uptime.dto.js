@@ -19,4 +19,4 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], siteDto.prototype, "host", void 0);
-//# sourceMappingURL=app.dto.js.map
+//# sourceMappingURL=uptime.dto.js.map

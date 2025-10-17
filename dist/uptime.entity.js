@@ -5,6 +5,6 @@ exports.sites = [
     { status: 'UP', host: 'https://google.com', lastUpdate: '' },
     { status: 'UP', host: 'https://chatgpt.com', lastUpdate: '' },
     { status: 'UP', host: 'https://claude.com', lastUpdate: '' },
-    { status: 'UP', host: 'https://youtube.com', lastUpdate: '' },
+    { status: 'DOWN', host: 'https://youtube.com', lastUpdate: '' },
 ];
-//# sourceMappingURL=app.entity.js.map
+//# sourceMappingURL=uptime.entity.js.map
