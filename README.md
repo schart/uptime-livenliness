@@ -2,6 +2,8 @@
 
 Real-time monitoring dashboard for your services.
 
+![alt text](imgs/image.png)
+
 ## Features
 
 - Monitor multiple services (HTTP endpoints)
