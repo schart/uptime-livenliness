@@ -11,4 +11,4 @@ exports.apiClient = axios_1.default.create({
     },
     timeout: 50000,
 });
-//# sourceMappingURL=app.api-client.js.map
+//# sourceMappingURL=uptime.api.client.js.map

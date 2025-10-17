@@ -9,11 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppController = void 0;
-const app_service_1 = require("./app.service");
+exports.UptimeController = void 0;
 const common_1 = require("@nestjs/common");
 const schedule_1 = require("@nestjs/schedule");
-let AppController = class AppController {
+const uptime_service_1 = require("./uptime.service");
+let UptimeController = class UptimeController {
     appService;
     constructor(appService) {
         this.appService = appService;
@@ -25,21 +25,21 @@ let AppController = class AppController {
         this.appService.handeCron();
     }
 };
-exports.AppController = AppController;
+exports.UptimeController = UptimeController;
 __decorate([
     (0, common_1.Get)('/'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Object)
-], AppController.prototype, "getAll", null);
+], UptimeController.prototype, "getAll", null);
 __decorate([
     (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_5_SECONDS),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], AppController.prototype, "handleCron", null);
-exports.AppController = AppController = __decorate([
+], UptimeController.prototype, "handleCron", null);
+exports.UptimeController = UptimeController = __decorate([
     (0, common_1.Controller)('site'),
-    __metadata("design:paramtypes", [app_service_1.AppService])
-], AppController);
-//# sourceMappingURL=app.controller.js.map
+    __metadata("design:paramtypes", [uptime_service_1.UptimeService])
+], UptimeController);
+//# sourceMappingURL=uptime.controller.js.map
