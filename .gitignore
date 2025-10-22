@@ -1,1 +1,6 @@
 /node_modules
+influxdata-archive.key
+influxdata-archive_compact.key
+.env
+install_influxdb3.sh
+influxdata-archive_compat.key
