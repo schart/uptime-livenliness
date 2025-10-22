@@ -10,15 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UptimeService = void 0;
-const common_1 = require("@nestjs/common");
 const uptime_entity_1 = require("./uptime.entity");
 const uptime_api_client_1 = require("./uptime.api.client");
 const uptime_gateway_1 = require("./uptime.gateway");
+const common_1 = require("@nestjs/common");
+const uptime_influx_service_1 = require("./uptime.influx.service");
 let UptimeService = class UptimeService {
     gateway;
+    influx;
     logger = new common_1.Logger();
-    constructor(gateway) {
+    constructor(gateway, influx) {
         this.gateway = gateway;
+        this.influx = influx;
     }
     getSites() {
         return {
@@ -29,6 +32,17 @@ let UptimeService = class UptimeService {
                 lastUpdate,
             })),
         };
+    }
+    async getStatus(host) {
+        return await this.influx.getHostStatus(`https://${host}.com`);
+    }
+    addHost(host) {
+        uptime_entity_1.sites.push({
+            host: `https://${host}`,
+            status: 'DOWN',
+            lastUpdate: '',
+        });
+        return { status: 200, content: uptime_entity_1.sites[uptime_entity_1.sites.length - 1] };
     }
     async handeCron() {
         await Promise.all(uptime_entity_1.sites.map(async (site) => {
@@ -42,10 +56,11 @@ let UptimeService = class UptimeService {
             }
             catch (e) {
                 site.status = 'DOWN';
-                this.logger.error(`DOWN: ${site.host}`, e.stack);
+                this.logger.error(`DOWN: ${site.host}`);
             }
             finally {
                 site.lastUpdate = new Date().toISOString();
+                await this.influx.writeCheck(site);
                 this.gateway.sendStatusUpdate(site);
             }
         }));
@@ -54,6 +69,7 @@ let UptimeService = class UptimeService {
 exports.UptimeService = UptimeService;
 exports.UptimeService = UptimeService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [uptime_gateway_1.UptimeGateway])
+    __metadata("design:paramtypes", [uptime_gateway_1.UptimeGateway,
+        uptime_influx_service_1.InfluxService])
 ], UptimeService);
 //# sourceMappingURL=uptime.service.js.map

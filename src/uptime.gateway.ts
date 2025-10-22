@@ -7,7 +7,12 @@ import {
 import { Server } from 'socket.io';
 import { siteEntityInterface } from './uptime.types';
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    credentials: true,
+  },
+})
 @Injectable()
 export class UptimeGateway implements OnGatewayConnection {
   @WebSocketServer()

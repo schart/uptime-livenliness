@@ -28,7 +28,12 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], UptimeGateway.prototype, "server", void 0);
 exports.UptimeGateway = UptimeGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ cors: { origin: '*' } }),
+    (0, websockets_1.WebSocketGateway)({
+        cors: {
+            origin: '*',
+            credentials: true,
+        },
+    }),
     (0, common_1.Injectable)()
 ], UptimeGateway);
 //# sourceMappingURL=uptime.gateway.js.map
