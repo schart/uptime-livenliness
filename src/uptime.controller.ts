@@ -1,6 +1,5 @@
 import { UptimeService } from './uptime.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import type { responseInterface } from './uptime.types';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { siteDto } from './uptime.dto';
 
@@ -9,8 +8,8 @@ export class UptimeController {
   constructor(private readonly uptimeService: UptimeService) {}
 
   @Get('/')
-  getAll(): responseInterface {
-    return this.uptimeService.getSites();
+  async getAll() {
+    return await this.uptimeService.getSites();
   }
 
   @Get(':host')
@@ -20,11 +19,11 @@ export class UptimeController {
 
   @Post('/add')
   async addHost(@Body() body: siteDto) {
-    return this.uptimeService.addHost(body.host);
+    return await this.uptimeService.addHost(body.host);
   }
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   async handleCron(): Promise<any> {
-    this.uptimeService.handeCron();
+    this.uptimeService.handleCron();
   }
 }

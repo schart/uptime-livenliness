@@ -1,6 +1,41 @@
-/node_modules
+# --- Node / NestJS ---
+node_modules/
+dist/
+coverage/
+logs/
+*.log
+
+# --- Environment files ---
+.env
+.env.local
+.env.*.local
+
+# --- OS & IDE files ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+
+# --- Build artifacts ---
+*.tsbuildinfo
+
+# --- InfluxDB or local keys ---
 influxdata-archive.key
 influxdata-archive_compact.key
-.env
-install_influxdb3.sh
 influxdata-archive_compat.key
+install_influxdb3.sh
+
+# --- Docker / containers ---
+docker-compose.override.yml
+.docker/
+*.pid
+
+# --- Temporary / cache ---
+tmp/
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

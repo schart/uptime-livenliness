@@ -2,8 +2,8 @@ type status = 'UP' | 'DOWN';
 
 export interface siteEntityInterface {
   host: string;
-  status: status;
-  lastUpdate: number | string;
+  status: string;
+  updateAt?: number | string;
 }
 
 export interface responseInterface {
