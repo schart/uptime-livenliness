@@ -24,6 +24,7 @@ export class InfluxService {
       this.config.get<any>('INFLUX_ORG'),
       this.config.get<any>('INFLUX_BUCKET'),
     );
+
     this.queryApi = this.influx.getQueryApi(this.config.get<any>('INFLUX_ORG'));
   }
 
@@ -31,7 +32,7 @@ export class InfluxService {
     const point = new Point('site-status')
       .tag('host', data.host)
       .stringField('status', data.status)
-      .stringField('lastUpdate', data.lastUpdate);
+      .stringField('updateAt', data.updateAt);
 
     this.writeApi.writePoint(point);
     await this.writeApi.flush();
@@ -42,7 +43,7 @@ export class InfluxService {
       from(bucket: "uptime")
         |> range(start: -10m)
         |> filter(fn: (r) => r._measurement == "site-status" and r.host == "${host}")
-        // |> last()
+        |> last()
     `;
     const data = await this.queryApi.collectRows(query);
     return data[0] || null;

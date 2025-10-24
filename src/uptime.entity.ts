@@ -1,8 +1,7 @@
-import { siteEntityInterface } from './uptime.types';
+import { Column, Model, Table } from 'sequelize-typescript';
 
-export let sites: siteEntityInterface[] = [
-  { status: 'DOWN', host: 'https://google.com', lastUpdate: '' },
-  { status: 'DOWN', host: 'https://chatgpt.com', lastUpdate: '' },
-  { status: 'DOWN', host: 'https://claude.com', lastUpdate: '' },
-  { status: 'DOWN', host: 'https://youtube.com', lastUpdate: '' },
-];
+@Table({ tableName: 'site', updatedAt: true })
+export class SiteModel extends Model<SiteModel> {
+  @Column({ allowNull: false, unique: true })
+  host: string;
+}
