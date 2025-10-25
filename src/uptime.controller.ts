@@ -1,6 +1,6 @@
 import { UptimeService } from './uptime.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { siteDto } from './uptime.dto';
 
 @Controller('site')
@@ -8,8 +8,11 @@ export class UptimeController {
   constructor(private readonly uptimeService: UptimeService) {}
 
   @Get('/')
-  async getAll() {
-    return await this.uptimeService.getSites();
+  async getAll(@Query('page') page?: number, @Query('limit') limit?: number) {
+    page = Number(page);
+    limit = Number(limit);
+
+    return await this.uptimeService.getSites({ limit: limit, page: page });
   }
 
   @Get(':host')
@@ -17,7 +20,7 @@ export class UptimeController {
     return this.uptimeService.getStatus(host);
   }
 
-  @Post('/add')
+  @Post('/')
   async addHost(@Body() body: siteDto) {
     return await this.uptimeService.addHost(body.host);
   }

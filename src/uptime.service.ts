@@ -14,40 +14,8 @@ export class UptimeService {
     private readonly sequelizeService: sequelizeService,
   ) {}
 
-  async getSites(): Promise<responseInterface> {
-    return {
-      status: 200,
-      content: (await this.sequelizeService.findAllSitesService()) || null,
-    };
-  }
-
-  async getStatus(host: string): Promise<responseInterface> {
-    return {
-      status: 200,
-      content:
-        (await this.influxService.getHostStatus(`https://${host}.com`)) || null,
-    };
-  }
-
-  async addHost(host: string): Promise<responseInterface> {
-    await this.sequelizeService.addSiteService(host);
-    const objectOfSite = {
-      host: `https://${host}`,
-      status: 'DOWN',
-      updateAt: 0,
-    };
-
-    this.gateway.sendStatusUpdate(objectOfSite);
-    await this.influxService.writeCheck(objectOfSite);
-
-    return {
-      status: 200,
-      content: objectOfSite,
-    };
-  }
-
   async handleCron() {
-    const sites = await this.sequelizeService.findAllSitesService();
+    const sites = await this.sequelizeService.findAllService();
     await Promise.all(
       sites.map(async (site) => {
         const host = site.host || site.dataValues.host;
@@ -64,8 +32,10 @@ export class UptimeService {
         } catch (error) {
           if (error.status < 500) {
             status = 'UP';
+            this.logger.debug(`UP: ${site.dataValues.host}`);
+          } else {
+            this.logger.error(`DOWN: ${site.dataValues.host}`);
           }
-          this.logger.error(`DOWN: ${site.dataValues.host}`);
         }
 
         const objectOfSite: siteEntityInterface = {
@@ -78,5 +48,40 @@ export class UptimeService {
         this.gateway.sendStatusUpdate(objectOfSite);
       }),
     );
+  }
+
+  async addHost(host: string): Promise<responseInterface> {
+    const objectOfSite = {
+      host: `https://${host}`,
+      status: 'DOWN',
+      updateAt: new Date().toISOString(),
+    };
+
+    await this.sequelizeService.addSiteService(host);
+    await this.influxService.writeCheck(objectOfSite);
+    this.gateway.sendStatusUpdate(objectOfSite);
+
+    return {
+      status: 200,
+      content: objectOfSite,
+    };
+  }
+
+  async getSites(pagination?: {
+    page: number;
+    limit: number;
+  }): Promise<responseInterface> {
+    return {
+      status: 200,
+      content: (await this.sequelizeService.findAllService()) || null,
+    };
+  }
+
+  async getStatus(host: string): Promise<responseInterface> {
+    return {
+      status: 200,
+      content:
+        (await this.influxService.getHostStatus(`https://${host}.com`)) || null,
+    };
   }
 }

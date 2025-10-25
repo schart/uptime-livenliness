@@ -1,4 +1,4 @@
-type status = 'UP' | 'DOWN';
+// type status = 'UP' | 'DOWN';
 
 export interface siteEntityInterface {
   host: string;
