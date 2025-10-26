@@ -4,6 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InfluxService } from './uptime.influx.service';
 import { sequelizeService } from './uptime.sequelize.service';
 import { responseInterface, siteEntityInterface } from './uptime.types';
+import { PaginationDto } from './uptime.dto';
 
 @Injectable()
 export class UptimeService {
@@ -67,21 +68,27 @@ export class UptimeService {
     };
   }
 
-  async getSites(pagination?: {
-    page: number;
-    limit: number;
-  }): Promise<responseInterface> {
+  async getSites(pagination: PaginationDto): Promise<responseInterface> {
+    this.logger.log(
+      `[PAGINATION] Page: ${pagination.page} & Limit: ${pagination.limit} `,
+    );
+
     return {
       status: 200,
-      content: (await this.sequelizeService.findAllService()) || null,
+      content:
+        (await this.sequelizeService.findAllByPaginationService(pagination)) ||
+        null,
     };
   }
 
   async getStatus(host: string): Promise<responseInterface> {
     return {
       status: 200,
-      content:
-        (await this.influxService.getHostStatus(`https://${host}.com`)) || null,
+      content: {
+        hosts:
+          (await this.influxService.getHostStatus(`https://${host}.com`)) ||
+          null,
+      },
     };
   }
 }
