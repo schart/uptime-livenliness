@@ -1,18 +1,26 @@
 import { UptimeService } from './uptime.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { siteDto } from './uptime.dto';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  ValidationPipe,
+} from '@nestjs/common';
+import { PaginationDto, siteDto } from './uptime.dto';
 
 @Controller('site')
 export class UptimeController {
   constructor(private readonly uptimeService: UptimeService) {}
 
   @Get('/')
-  async getAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-    page = Number(page);
-    limit = Number(limit);
-
-    return await this.uptimeService.getSites({ limit: limit, page: page });
+  async getAll(@Query() pagination: PaginationDto) {
+    return await this.uptimeService.getSites({
+      limit: pagination.limit,
+      page: pagination.page,
+    });
   }
 
   @Get(':host')

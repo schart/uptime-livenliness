@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { SiteModel } from './uptime.entity';
+import { PaginationDto } from './uptime.dto';
 
 @Injectable()
 export class sequelizeService {
@@ -44,21 +45,27 @@ export class sequelizeService {
     }
   }
 
-  // async findAllService(pagination: { page: number; limit: number }) {
-  //   const { page, limit } = pagination;
-  //   const offset = (page - 1) * limit;
+  async findAllByPaginationService(pagination: PaginationDto) {
+    const limit = Number(pagination.limit) || 5;
+    const { count: total, rows: _ } = await this.model.findAndCountAll();
 
-  //   const { rows: data, count: total } = await this.model.findAndCountAll({
-  //     offset,
-  //     limit,
-  //     order: [['id', 'ASC']],
-  //   });
+    const lastPage = Math.ceil(total / limit);
+    let page = Number(pagination.page) || 1;
 
-  //   return {
-  //     data,
-  //     total,
-  //     page,
-  //     lastPage: Math.ceil(total / limit),
-  //   };
-  // }
+    page = Math.min(Math.max(page, 1), lastPage);
+    const offset = (page - 1) * limit;
+
+    const { rows } = await this.model.findAndCountAll({
+      limit,
+      offset,
+      order: [['id', 'ASC']],
+    });
+
+    return {
+      hosts: rows,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
+  }
 }
